@@ -1,0 +1,34 @@
+package com.joaogabriel.todolist.service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.joaogabriel.todolist.domain.User;
+import com.joaogabriel.todolist.repository.UserRepository;
+import com.joaogabriel.todolist.service.exception.ObjectNotFoundException;
+
+@Service
+public class UserService {
+	
+	@Autowired
+	private UserRepository repo;
+	
+	public User insert(User u) {
+		return repo.save(u);
+	}
+	
+	public List<User> findAll(){
+		return repo.findAll();
+	}
+	
+	public User findById(UUID id) {
+		
+		Optional<User> user = repo.findById(id);
+		
+		return user.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+	}
+}
