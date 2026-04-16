@@ -2,13 +2,17 @@ package com.joaogabriel.todolist.domain;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,7 +28,12 @@ public class User implements Serializable{
 	private String password;
 	private OffsetDateTime created_at;
 	
-	private User() {}
+	@OneToMany(mappedBy = "idUser", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Task> tasks = new ArrayList<>();
+	
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	public User(UUID id, String name, String email, String password, OffsetDateTime created_at) {
 		super();
@@ -75,6 +84,10 @@ public class User implements Serializable{
 
 	public void setCreated_at(OffsetDateTime created_at) {
 		this.created_at = created_at;
+	}
+	
+	public List<Task> getTasks() {
+		return tasks;
 	}
 
 	@Override

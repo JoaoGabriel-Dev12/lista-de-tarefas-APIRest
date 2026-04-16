@@ -1,9 +1,11 @@
 package com.joaogabriel.todolist.domain;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.joaogabriel.todolist.domain.enums.PriorityEnum;
 
 import jakarta.persistence.Entity;
@@ -12,6 +14,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 
@@ -28,17 +32,26 @@ public class Task implements Serializable{
 	
 	@Enumerated(EnumType.STRING)
 	private PriorityEnum priority;
+	private OffsetDateTime createdAt;
+	
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	@JsonIgnore
+	private User idUser;
 	
 	public Task() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Task(UUID id, String tile, String description, PriorityEnum priority) {
+	public Task(UUID id, String tile, String description, PriorityEnum priority, OffsetDateTime createdAt, User idUser) {
 		super();
 		this.id = id;
 		this.tile = tile;
 		this.description = description;
 		this.priority = priority;
+		this.createdAt = createdAt;
+		this.idUser = idUser;
 	}
 
 	public UUID getId() {
@@ -71,6 +84,22 @@ public class Task implements Serializable{
 
 	public void setPriority(PriorityEnum priority) {
 		this.priority = priority;
+	}
+	
+	public OffsetDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(OffsetDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public User getIdUser() {
+		return idUser;
+	}
+
+	public void setIdUser(User idUser) {
+		this.idUser = idUser;
 	}
 
 	@Override
