@@ -14,7 +14,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.joaogabriel.todolist.domain.Task;
 import com.joaogabriel.todolist.dto.TaskDTO;
 import com.joaogabriel.todolist.service.TaskService;
-import com.joaogabriel.todolist.service.UserService;
 
 @RestController
 @RequestMapping("/task")
@@ -23,15 +22,21 @@ public class TaskResource {
 	@Autowired
 	private TaskService service;
 	
-	@Autowired
-	private UserService userService;
-	
 	@PostMapping
 	public ResponseEntity<Void> save(@RequestBody TaskDTO dto){
 		
-		Task obj = new Task(null, dto.getTitle(), dto.getDescription(),
-				dto.getPriority(), OffsetDateTime.now(), userService.findById(dto.getIdUser()));
+		if(dto.getTitle() == null || dto.getDescription() == null ||
+				dto.getPriority() == null || dto.getIdUser() == null) {
+			return ResponseEntity.badRequest().build();
+		}
 		
+		if(dto.getTitle().isEmpty() || dto.getDescription().isEmpty() || dto.getIdUser().toString().isEmpty()) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+		Task obj = service.fromDTO(dto);
+		
+		obj.setCreatedAt(OffsetDateTime.now());
 		obj = service.insert(obj);
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()

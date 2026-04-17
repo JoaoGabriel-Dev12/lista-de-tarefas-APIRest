@@ -44,13 +44,12 @@ public class Task implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public Task(UUID id, String title, String description, PriorityEnum priority, OffsetDateTime createdAt, User idUser) {
+	public Task(UUID id, String title, String description, PriorityEnum priority, User idUser) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.priority = priority;
-		this.createdAt = createdAt;
 		this.idUser = idUser;
 	}
 

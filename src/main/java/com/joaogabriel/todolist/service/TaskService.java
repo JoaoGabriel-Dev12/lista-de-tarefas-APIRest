@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.joaogabriel.todolist.domain.Task;
+import com.joaogabriel.todolist.domain.User;
+import com.joaogabriel.todolist.dto.TaskDTO;
 import com.joaogabriel.todolist.repository.TaskRepository;
 import com.joaogabriel.todolist.service.exception.ObjectNotFoundException;
 
@@ -30,5 +32,11 @@ public class TaskService {
 		Optional<Task> task = repo.findById(id);
 		
 		return task.orElseThrow(() -> new ObjectNotFoundException("Tarefa não encontrada"));
+	}
+	
+	public Task fromDTO(TaskDTO dto) {
+		
+		return new Task(null, dto.getTitle(), dto.getDescription(), 
+				dto.getPriority(), new User(dto.getIdUser(), null, null, null));
 	}
 }
