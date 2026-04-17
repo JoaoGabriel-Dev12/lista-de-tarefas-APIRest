@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.joaogabriel.todolist.domain.User;
+import com.joaogabriel.todolist.dto.UserDTO;
 import com.joaogabriel.todolist.repository.UserRepository;
 import com.joaogabriel.todolist.service.exception.ObjectNotFoundException;
 
@@ -30,5 +31,9 @@ public class UserService {
 		Optional<User> user = repo.findById(id);
 		
 		return user.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+	}
+	
+	public User fromDTO(UserDTO dto) {
+		return new User(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword());
 	}
 }

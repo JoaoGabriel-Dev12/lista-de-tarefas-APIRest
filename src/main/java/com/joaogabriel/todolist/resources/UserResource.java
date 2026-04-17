@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.joaogabriel.todolist.domain.User;
+import com.joaogabriel.todolist.dto.UserDTO;
 import com.joaogabriel.todolist.service.UserService;
 
 @RestController
@@ -26,15 +27,25 @@ public class UserResource {
 	private UserService service;
 	
 	@PostMapping
-	public ResponseEntity<User> save(@RequestBody User user){
+	public ResponseEntity<Void> save(@RequestBody UserDTO dto){
 		
-		user.setCreated_at(OffsetDateTime.now());
-		User obj = service.insert(user);
+		if(dto.getName() == null || dto.getEmail() == null || dto.getPassword() == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+		if(dto.getName().isEmpty() || dto.getEmail().isEmpty() || dto.getPassword().isEmpty()) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+		User obj = service.fromDTO(dto);
+		
+		obj.setCreated_at(OffsetDateTime.now());
+		obj = service.insert(obj);
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}").buildAndExpand(obj.getId()).toUri();
 		
-		return ResponseEntity.created(uri).body(obj);
+		return ResponseEntity.created(uri).build();
 	}
 	
 	@GetMapping

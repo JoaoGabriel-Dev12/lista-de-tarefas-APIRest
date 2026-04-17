@@ -35,13 +35,12 @@ public class User implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public User(UUID id, String name, String email, String password, OffsetDateTime created_at) {
+	public User(UUID id, String name, String email, String password) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
-		this.created_at = created_at;
 	}
 
 

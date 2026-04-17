@@ -3,6 +3,7 @@ package com.joaogabriel.todolist.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
+import com.joaogabriel.todolist.domain.Task;
 import com.joaogabriel.todolist.domain.enums.PriorityEnum;
 
 public class TaskDTO implements Serializable{
@@ -17,12 +18,12 @@ public class TaskDTO implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public TaskDTO(String title, String description, PriorityEnum priority, UUID idUser) {
+	public TaskDTO(Task task) {
 		super();
-		this.title = title;
-		this.description = description;
-		this.priority = priority;
-		this.idUser = idUser;
+		this.title = task.getTitle();
+		this.description = task.getDescription();
+		this.priority = task.getPriority();
+		this.idUser = task.getIdUser().getId();
 	}
 
 	public String getTitle() {

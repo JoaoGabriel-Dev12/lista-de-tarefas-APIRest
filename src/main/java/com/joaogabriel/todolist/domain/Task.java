@@ -27,7 +27,7 @@ public class Task implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
-	private String tile;
+	private String title;
 	private String description;
 	
 	@Enumerated(EnumType.STRING)
@@ -44,10 +44,10 @@ public class Task implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public Task(UUID id, String tile, String description, PriorityEnum priority, OffsetDateTime createdAt, User idUser) {
+	public Task(UUID id, String title, String description, PriorityEnum priority, OffsetDateTime createdAt, User idUser) {
 		super();
 		this.id = id;
-		this.tile = tile;
+		this.title = title;
 		this.description = description;
 		this.priority = priority;
 		this.createdAt = createdAt;
@@ -62,12 +62,12 @@ public class Task implements Serializable{
 		this.id = id;
 	}
 
-	public String getTile() {
-		return tile;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setTile(String tile) {
-		this.tile = tile;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getDescription() {

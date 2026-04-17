@@ -27,7 +27,7 @@ public class TaskResource {
 	private UserService userService;
 	
 	@PostMapping
-	public ResponseEntity<Task> save(@RequestBody TaskDTO dto){
+	public ResponseEntity<Void> save(@RequestBody TaskDTO dto){
 		
 		Task obj = new Task(null, dto.getTitle(), dto.getDescription(),
 				dto.getPriority(), OffsetDateTime.now(), userService.findById(dto.getIdUser()));
@@ -37,7 +37,7 @@ public class TaskResource {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}").buildAndExpand(obj.getId()).toUri();
 		
-		return ResponseEntity.created(uri).body(obj);
+		return ResponseEntity.created(uri).build();
 	}
 	
 }
