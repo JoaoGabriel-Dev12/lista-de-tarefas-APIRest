@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.joaogabriel.todolist.domain.User;
@@ -18,7 +19,11 @@ public class UserService {
 	@Autowired
 	private UserRepository repo;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	public User insert(User u) {
+		u.setPassword(passwordEncoder.encode(u.getPassword()));
 		return repo.save(u);
 	}
 	
