@@ -1,5 +1,6 @@
 package com.joaogabriel.todolist.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,26 +18,34 @@ import com.joaogabriel.todolist.service.exception.ObjectNotFoundException;
 public class TaskService {
 	
 	@Autowired
-	private TaskRepository repo;
+	private TaskRepository repoTask;
+	
+	@Autowired
+	private UserService serviceUser;
 	
 	public Task insert(Task u) {
-		return repo.save(u);
+		return repoTask.save(u);
 	}
 	
 	public List<Task> findAll(){
-		return repo.findAll();
+		return repoTask.findAll();
 	}
 	
 	public Task findById(UUID id) {
 		
-		Optional<Task> task = repo.findById(id);
+		Optional<Task> task = repoTask.findById(id);
 		
 		return task.orElseThrow(() -> new ObjectNotFoundException("Tarefa não encontrada"));
 	}
 	
-	public Task fromDTO(TaskDTO dto) {
+	public Task fromDTO(UUID idUser, TaskDTO dto) {
+
+		User u = serviceUser.findById(idUser);
 		
-		return new Task(null, dto.getTitle(), dto.getDescription(), 
-				dto.getPriority(), new User(dto.getIdUser(), null, null, null));
+		Task obj = new Task(null, dto.getTitle(), dto.getDescription(), 
+				dto.getPriority(), u);
+		obj.setCreatedAt(OffsetDateTime.now());
+		
+		return obj;
 	}
 }
