@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,5 +51,19 @@ public class TaskResource {
 				.toList();
 		
 		return ResponseEntity.ok().body(list);
+	}
+	
+	@PutMapping("/{idTask}")
+	public ResponseEntity<Void> update(@PathVariable UUID idTask, @RequestBody TaskDTO dto){
+		
+		if (dto.getTitle() == null || dto.getTitle().isBlank() ||
+				dto.getDescription() == null || dto.getDescription().isBlank() ||
+			    dto.getPriority() == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+		service.update(idTask, dto);
+		
+		return ResponseEntity.noContent().build();
 	}
 }

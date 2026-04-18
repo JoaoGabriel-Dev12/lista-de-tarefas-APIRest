@@ -27,6 +27,19 @@ public class TaskService {
 		return repoTask.save(u);
 	}
 	
+	public void update(UUID idTask, TaskDTO dto) {
+		
+		Task obj = repoTask.findById(idTask)
+				.orElseThrow(() -> new ObjectNotFoundException("Tarefa não enocntrada"));
+		
+		obj.setTitle(dto.getTitle());
+		obj.setDescription(dto.getDescription());
+		obj.setPriority(dto.getPriority());
+		
+		repoTask.save(obj);
+		
+	}
+	
 	public List<Task> findAll(){
 		return repoTask.findAll();
 	}
