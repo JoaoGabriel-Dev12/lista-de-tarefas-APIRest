@@ -51,6 +51,14 @@ public class TaskService {
 		return task.orElseThrow(() -> new ObjectNotFoundException("Tarefa não encontrada"));
 	}
 	
+	public void delete(UUID id) {
+		
+		Task task = repoTask.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("Tarefa não encontrada"));
+		
+		repoTask.delete(task);
+	}
+	
 	public Task fromDTO(UUID idUser, TaskDTO dto) {
 
 		User u = serviceUser.findById(idUser);
