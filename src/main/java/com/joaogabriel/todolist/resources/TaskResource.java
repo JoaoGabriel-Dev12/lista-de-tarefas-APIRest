@@ -17,7 +17,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.joaogabriel.todolist.domain.Task;
 import com.joaogabriel.todolist.dto.TaskDTO;
 import com.joaogabriel.todolist.service.TaskService;
-import com.joaogabriel.todolist.service.UserService;
 
 @RestController
 @RequestMapping("/tasks")
@@ -25,9 +24,6 @@ public class TaskResource {
 
 	@Autowired
 	private TaskService service;
-	
-	@Autowired
-	private UserService serviceUser;
 	
 	@PostMapping("/user/{idUser}")
 	public ResponseEntity<Void> save(@PathVariable UUID idUser , @RequestBody TaskDTO dto){
@@ -49,8 +45,9 @@ public class TaskResource {
 
 	@GetMapping("/user/{idUser}")
 	public ResponseEntity<List<TaskDTO>> findAll(@PathVariable UUID idUser){
-		List<TaskDTO> list = serviceUser.findById(idUser).getTasks()
-				.stream().map(t -> new TaskDTO(t)).toList();
+		List<TaskDTO> list = service.findByUser(idUser).stream()
+				.map(TaskDTO::new)
+				.toList();
 		
 		return ResponseEntity.ok().body(list);
 	}

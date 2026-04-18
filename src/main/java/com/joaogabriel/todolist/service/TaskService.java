@@ -48,4 +48,9 @@ public class TaskService {
 		
 		return obj;
 	}
+	
+	public List<Task> findByUser(UUID idUser){
+		User u = serviceUser.findById(idUser);
+		return u.getTasks();
+	}
 }
