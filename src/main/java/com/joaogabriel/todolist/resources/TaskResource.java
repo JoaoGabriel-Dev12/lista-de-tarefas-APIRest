@@ -46,4 +46,12 @@ public class TaskResource {
 		
 		return ResponseEntity.created(uri).build();
 	}
+
+	@GetMapping("/user/{idUser}")
+	public ResponseEntity<List<TaskDTO>> findAll(@PathVariable UUID idUser){
+		List<TaskDTO> list = serviceUser.findById(idUser).getTasks()
+				.stream().map(t -> new TaskDTO(t)).toList();
+		
+		return ResponseEntity.ok().body(list);
+	}
 }
