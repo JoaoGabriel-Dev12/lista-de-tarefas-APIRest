@@ -79,10 +79,18 @@ public class TaskResource {
 	}
 	
 	@DeleteMapping("/{idTask}")
-	public ResponseEntity<Void> delete(@PathVariable UUID idTask, @AuthenticationPrincipal Jwt jwt){
+	public ResponseEntity<Void> deleteById(@PathVariable UUID idTask, @AuthenticationPrincipal Jwt jwt){
 		
 		UUID idUser = UUID.fromString(jwt.getClaim("id"));
-		service.delete(idTask, idUser);
+		service.deleteById(idTask, idUser);
+		
+		return ResponseEntity.noContent().build();
+	}
+	
+	@DeleteMapping("/all")
+	public ResponseEntity<Void> deleteAll(@AuthenticationPrincipal Jwt jwt){
+		UUID idUser = UUID.fromString(jwt.getClaim("id"));
+		service.deleteAll(idUser);
 		
 		return ResponseEntity.noContent().build();
 	}

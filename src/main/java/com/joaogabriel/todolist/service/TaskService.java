@@ -55,7 +55,7 @@ public class TaskService {
 		return task.orElseThrow(() -> new ObjectNotFoundException("Tarefa não encontrada"));
 	}
 	
-	public void delete(UUID id, UUID idUser) {
+	public void deleteById(UUID id, UUID idUser) {
 		
 		Task obj = repoTask.findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException("Tarefa não encontrada"));
@@ -64,6 +64,13 @@ public class TaskService {
 		    throw new AccessDeniedException("Você não tem permissão para modificar essa tarefa.");
 		
 		repoTask.delete(obj);
+	}
+	
+	public void deleteAll(UUID idUser) {
+		
+		List<Task> list = repoTask.findByIdUser_Id(idUser);
+		
+		repoTask.deleteAll(list);
 	}
 	
 	public Task fromDTO(UUID idUser, TaskDTO dto) {
