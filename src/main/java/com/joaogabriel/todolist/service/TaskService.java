@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.joaogabriel.todolist.domain.Task;
@@ -27,10 +28,13 @@ public class TaskService {
 		return repoTask.save(u);
 	}
 	
-	public void update(UUID idTask, TaskDTO dto) {
+	public void update(UUID idTask, UUID idUser, TaskDTO dto) {
 		
 		Task obj = repoTask.findById(idTask)
 				.orElseThrow(() -> new ObjectNotFoundException("Tarefa não enocntrada"));
+		
+		if(!idUser.equals(obj.getIdUser().getId()))
+		    throw new AccessDeniedException("Você não tem permissão para modificar essa tarefa.");
 		
 		obj.setTitle(dto.getTitle());
 		obj.setDescription(dto.getDescription());
@@ -51,12 +55,15 @@ public class TaskService {
 		return task.orElseThrow(() -> new ObjectNotFoundException("Tarefa não encontrada"));
 	}
 	
-	public void delete(UUID id) {
+	public void delete(UUID id, UUID idUser) {
 		
-		Task task = repoTask.findById(id)
+		Task obj = repoTask.findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException("Tarefa não encontrada"));
 		
-		repoTask.delete(task);
+		if(!idUser.equals(obj.getIdUser().getId()))
+		    throw new AccessDeniedException("Você não tem permissão para modificar essa tarefa.");
+		
+		repoTask.delete(obj);
 	}
 	
 	public Task fromDTO(UUID idUser, TaskDTO dto) {

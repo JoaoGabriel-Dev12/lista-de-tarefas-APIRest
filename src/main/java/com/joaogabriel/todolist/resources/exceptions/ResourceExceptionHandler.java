@@ -3,6 +3,7 @@ package com.joaogabriel.todolist.resources.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -32,4 +33,12 @@ public class ResourceExceptionHandler {
 		
         return ResponseEntity.status(status).body(error);
     }
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<StandardError> accessDenied(AccessDeniedException e, HttpServletRequest request) {
+	    HttpStatus status = HttpStatus.FORBIDDEN;
+	    StandardError error = new StandardError(System.currentTimeMillis(),
+	            status.value(), "Acesso negado", e.getMessage(), request.getRequestURI());
+	    return ResponseEntity.status(status).body(error);
+	}
 }

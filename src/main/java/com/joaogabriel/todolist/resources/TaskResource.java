@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,14 +29,16 @@ public class TaskResource {
 	@Autowired
 	private TaskService service;
 	
-	@PostMapping("/user/{idUser}")
-	public ResponseEntity<Void> save(@PathVariable UUID idUser , @RequestBody TaskDTO dto){
+	@PostMapping
+	public ResponseEntity<Void> save(@RequestBody TaskDTO dto, @AuthenticationPrincipal Jwt jwt){
 		
 		if (dto.getTitle() == null || dto.getTitle().isBlank() ||
 				dto.getDescription() == null || dto.getDescription().isBlank() ||
 			    dto.getPriority() == null) {
 			return ResponseEntity.badRequest().build();
 		}
+		
+		UUID idUser = UUID.fromString(jwt.getClaim("id"));
 		
 		Task obj = service.fromDTO(idUser, dto);
 		obj = service.insert(obj);
@@ -45,8 +49,11 @@ public class TaskResource {
 		return ResponseEntity.created(uri).build();
 	}
 
-	@GetMapping("/user/{idUser}")
-	public ResponseEntity<List<TaskDTO>> findAll(@PathVariable UUID idUser){
+	@GetMapping
+	public ResponseEntity<List<TaskDTO>> findAll(@AuthenticationPrincipal Jwt jwt){
+		
+		UUID idUser = UUID.fromString(jwt.getClaim("id"));
+		
 		List<TaskDTO> list = service.findByUser(idUser).stream()
 				.map(TaskDTO::new)
 				.toList();
@@ -55,7 +62,8 @@ public class TaskResource {
 	}
 	
 	@PutMapping("/{idTask}")
-	public ResponseEntity<Void> update(@PathVariable UUID idTask, @RequestBody TaskDTO dto){
+	public ResponseEntity<Void> update(@PathVariable UUID idTask, @RequestBody TaskDTO dto,
+			@AuthenticationPrincipal Jwt jwt){
 		
 		if (dto.getTitle() == null || dto.getTitle().isBlank() ||
 				dto.getDescription() == null || dto.getDescription().isBlank() ||
@@ -63,14 +71,18 @@ public class TaskResource {
 			return ResponseEntity.badRequest().build();
 		}
 		
-		service.update(idTask, dto);
+		UUID idUser = UUID.fromString(jwt.getClaim("id"));
+		
+		service.update(idTask, idUser, dto);
 		
 		return ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping("/{idTask}")
-	public ResponseEntity<Void> delete(@PathVariable UUID idTask){
-		service.delete(idTask);
+	public ResponseEntity<Void> delete(@PathVariable UUID idTask, @AuthenticationPrincipal Jwt jwt){
+		
+		UUID idUser = UUID.fromString(jwt.getClaim("id"));
+		service.delete(idTask, idUser);
 		
 		return ResponseEntity.noContent().build();
 	}
