@@ -40,7 +40,7 @@ public class UserService {
 	
 	public User update(UserDTO dto, UUID id) {
 		
-		User u = repo.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));;
+		User u = repo.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
 		u.setName(dto.getName());
 		u.setEmail(dto.getEmail());
@@ -49,8 +49,11 @@ public class UserService {
 		return repo.save(u);
 	}
 	
-	public void deleteAll() {
-		repo.deleteAll();
+	public void deleteById(UUID id) {
+		
+		User u = repo.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+		
+		repo.delete(u);
 	}
 	
 	public User fromDTO(UserDTO dto) {

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,6 +74,14 @@ public class UserResource {
 		UUID idUser = UUID.fromString(jwt.getClaim("id"));
 		service.update(dto, idUser);
 
+		return ResponseEntity.noContent().build();
+	}
+	
+	@DeleteMapping("/delete")
+	public ResponseEntity<Void> deleteById(@AuthenticationPrincipal Jwt jwt){
+		UUID idUser = UUID.fromString(jwt.getClaim("id"));
+		service.deleteById(idUser);
+		
 		return ResponseEntity.noContent().build();
 	}
 }
