@@ -38,6 +38,21 @@ public class UserService {
 		return user.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 	}
 	
+	public User update(UserDTO dto, UUID id) {
+		
+		User u = repo.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));;
+		
+		u.setName(dto.getName());
+		u.setEmail(dto.getEmail());
+		u.setPassword(passwordEncoder.encode(dto.getPassword()));
+		
+		return repo.save(u);
+	}
+	
+	public void deleteAll() {
+		repo.deleteAll();
+	}
+	
 	public User fromDTO(UserDTO dto) {
 		return new User(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword());
 	}

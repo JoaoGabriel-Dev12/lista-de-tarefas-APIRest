@@ -7,9 +7,12 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,38 +28,51 @@ public class UserResource {
 
 	@Autowired
 	private UserService service;
-	
+
 	@PostMapping
-	public ResponseEntity<Void> save(@RequestBody UserDTO dto){
-		
-		if(dto.getName() == null || dto.getEmail() == null || dto.getPassword() == null) {
+	public ResponseEntity<Void> save(@RequestBody UserDTO dto) {
+
+		if (dto.getName() == null || dto.getEmail() == null || dto.getPassword() == null) {
 			return ResponseEntity.badRequest().build();
 		}
-		
-		if(dto.getName().isEmpty() || dto.getEmail().isEmpty() || dto.getPassword().isEmpty()) {
+
+		if (dto.getName().isEmpty() || dto.getEmail().isEmpty() || dto.getPassword().isEmpty()) {
 			return ResponseEntity.badRequest().build();
 		}
-		
+
 		User obj = service.fromDTO(dto);
-		
+
 		obj.setCreated_at(OffsetDateTime.now());
 		obj = service.insert(obj);
-		
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}").buildAndExpand(obj.getId()).toUri();
-		
+
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+
 		return ResponseEntity.created(uri).build();
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<List<User>> findAll(){
+	public ResponseEntity<List<User>> findAll() {
 		List<User> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<User> findById(@PathVariable UUID id){
+	public ResponseEntity<User> findById(@PathVariable UUID id) {
 		User obj = service.findById(id);
 		return ResponseEntity.ok().body(obj);
+	}
+
+	@PutMapping("/update")
+	public ResponseEntity<Void> update(@RequestBody UserDTO dto, @AuthenticationPrincipal Jwt jwt) {
+
+		if (dto.getName() == null || dto.getName().isBlank() || dto.getEmail() == null || dto.getEmail().isBlank()
+				|| dto.getPassword() == null || dto.getPassword().isBlank()) {
+			return ResponseEntity.badRequest().build();
+		}
+
+		UUID idUser = UUID.fromString(jwt.getClaim("id"));
+		service.update(dto, idUser);
+
+		return ResponseEntity.noContent().build();
 	}
 }
